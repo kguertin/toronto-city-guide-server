@@ -1,7 +1,7 @@
 const { MongoClient } = require("mongodb");
 let _db;
 
-const URI = "mongodb+srv://toronto-guide:labs2020@cluster0-y2rr0.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
+const URI = "mongodb+srv://toronto-guide:labs2020@cluster0-y2rr0.mongodb.net/TorontoGuide?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
 
 const mongoConnect = (callback) => { 
   MongoClient.connect(URI)

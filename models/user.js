@@ -11,3 +11,5 @@ class User {
     return db.collection("users").insertOne(this);
   };
 };
+
+module.exports = User;
