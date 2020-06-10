@@ -1,6 +1,8 @@
 const express = require("express");
-const User = require("./models/user");
+
 const mongoConnect = require("./util/database").mongoConnect
+const User = require("./models/user");
+
 const app = express();
 
 app.get("/", (req, res) => {
