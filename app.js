@@ -10,10 +10,13 @@ const authRoutes = require('./routes/auth');
 
 app.use(authRoutes);
 
-app.get("/", (req, res) => {
-  const user = new User("Bart") 
+app.use("/", (req, res, next) => {
+  const user = new User("Bart")
   user.save()
-  .then(() => console.log("saved"));
+    .then(() => {
+      console.log("saved");
+      res.send('ok');
+      });
 })
 
 mongoConnect(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)));
