@@ -11,5 +11,5 @@ exports.getSignUp = (req, res) => {
 }
 
 exports.postSignUp = (req, res) => {
-  
+  console.log(req)
 }
