@@ -3,8 +3,10 @@ const mongodb = require("mongodb");
 const getDb = require("../util/database").getDb
 
 class User { 
-  constructor(username) {
+  constructor(username, email, password) {
     this.username = username;
+    this.email = email;
+    this.password = password;
   }
   save() {
     const db = getDb();
