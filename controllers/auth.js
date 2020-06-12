@@ -1,7 +1,17 @@
 const User = require('../models/user')
 
 exports.postLogin = (req, res) => {
-  
+  const {username, password} = req.body;
+
+  User.findUser(username)
+  .then(user => {
+    if (user.password === password) {
+      console.log(user)
+    } else {
+      console.log('invalid password');
+    }
+  })
+  .catch(err => console.log(err));
 }
 
 exports.postSignUp = (req, res) => {
