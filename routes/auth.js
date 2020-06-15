@@ -7,4 +7,6 @@ router.post('/login', authController.postLogin);
 
 router.post('/signup', authController.postSignUp);
 
+router.post('/isTokenValid', authController.isTokenValid);
+
 module.exports = router
