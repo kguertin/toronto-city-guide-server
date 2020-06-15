@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const isAuth = (req, res, next) => {
     try {
         const token = req.header('x-auth-token');
+        console.log(token)
         if (!token) {
             return res.status(401).json({msg: 'No authentication token, autherization denied'})
         } 
@@ -11,9 +12,11 @@ const isAuth = (req, res, next) => {
         if (!varified) {
             res.status(401).json({msg: 'Token varification failed, autherization denied'});
         }
-        res.user = varified.id
+        req.user = varified.id
         next()
     } catch (err) {
         res.status(500).json({error: err.message});
     }
 } 
+
+module.exports = isAuth

@@ -64,7 +64,6 @@ exports.postSignUp = async (req, res) => {
 exports.isTokenValid = async (req, res) => {
   try {
     const token = req.header('x-auth-token');
-    console.log('Token:', token);
     if(!token) return res.json(false);
 
     const varified = jwt.verify(token, process.env.JWT_SECRET);
