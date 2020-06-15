@@ -1,26 +1,22 @@
-const mongodb = require("mongodb");
+const mongoose = require('mongoose');
 
-const getDb = require("../util/database").getDb
-
-class User { 
-  constructor(username, email, password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
+const userSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    require: true
+  },
+  username: {
+    type: String,
+    required: true 
+  },
+  password: {
+    type: String,
+    required: true
   }
-  save() {
-    const db = getDb();
-    return db.collection("users").insertOne(this);
-  }
+})
 
-  static findUser(username) {
-    const db = getDb();
-    return db.collection('users').findOne({username: username})
-  }
 
-}
-
-module.exports = User;
+module.exports = User = mongoose.model("user", userSchema);
 
 //Things users need 
 // favourited/tagged places however we want to track map pins 
