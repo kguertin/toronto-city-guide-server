@@ -16,8 +16,10 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user')
 
-app.use(authRoutes);
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 
 mongoose.connect(process.env.DB_URI, {
   useNewUrlParser: true,
