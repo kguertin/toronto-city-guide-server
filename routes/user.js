@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/user');
-const isAuth = require('../middleware/isAuth')
+const isAuth = require('../middleware/isAuth');
 
-router.post('/getActiveUser', isAuth, userController.getUserToken)
+router.post('/getActiveUser', isAuth, userController.getActiveUser)
 
 router.post('/findUser', isAuth, userController.findUser)
 
