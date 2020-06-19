@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
 
-exports.getUserToken = async (req, res) => {
+exports.getActiveUser = async (req, res) => {
     const user = await User.findById(req.user);
     res.json({
         username: user.username,

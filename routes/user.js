@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require('../controllers/user');
 const isAuth = require('../middleware/isAuth')
 
-router.post('/GetUserToken', isAuth, userController.getUserToken)
+router.post('/getActiveUser', isAuth, userController.getUserToken)
 
 router.post('/findUser', isAuth, userController.findUser)
 
