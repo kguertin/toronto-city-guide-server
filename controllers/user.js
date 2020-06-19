@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
 
-exports.getUserToken = async (req, res) => {
+exports.getActiveUser = async (req, res) => {
     const user = await User.findById(req.user);
     res.json({
         username: user.username,
@@ -9,9 +9,22 @@ exports.getUserToken = async (req, res) => {
     })
 }
 
-exports.findUser = (req, res) => {
+exports.findUser = async (req, res) => {
     const { username } = req.body;
-    // console.log(username)
+    const currentUser = await User.findById(req.user);
+    if (currentUser.username === username) {
+        res.status(400).json({msg: 'Cant add yourself!'});
+    }
+
+    const isContact = currentUser.contact.find(i => {
+        return i.username === username; 
+    })
+    
+    if (isContact) {
+        return res.status(400).json({msg: 'User already a contact'});
+    }
+
+    console.log("thisssssss",isContact)
     User.findOne({username})
     .then(user => {
         // console.log("find user route: ",user)
