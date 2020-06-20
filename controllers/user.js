@@ -5,12 +5,14 @@ exports.getActiveUser = async (req, res) => {
     const user = await User.findById(req.user);
     res.json({
         username: user.username,
-        id: user._id
+        id: user._id,
+        contacts: user.contact
     })
 }
 
 exports.findUser = async (req, res) => {
     const { username } = req.body;
+    
     const currentUser = await User.findById(req.user);
     if (currentUser.username === username) {
         res.status(400).json({msg: 'Cant add yourself!'});
@@ -24,10 +26,8 @@ exports.findUser = async (req, res) => {
         return res.status(400).json({msg: 'User already a contact'});
     }
 
-    console.log("thisssssss",isContact)
     User.findOne({username})
     .then(user => {
-        // console.log("find user route: ",user)
         res.json({
             username: user.username,
             id: user._id
