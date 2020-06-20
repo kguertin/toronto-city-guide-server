@@ -1,12 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const authController = require('../controllers/auth');
+const scheduleController = require('../controllers/scheduleController');
 
-router.post('/login', authController.postLogin);
-
-router.post('/signup', authController.postSignUp);
-
-router.post('/isTokenValid', authController.isTokenValid);
+router.post('/schedules', scheduleController.schedules);
 
 module.exports = router
