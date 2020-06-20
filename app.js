@@ -16,10 +16,12 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user')
+const userRoutes = require('./routes/user');
+const schedulerRoutes = require('./routes/schedule')
 
 app.use('/auth', authRoutes);
 app.use(userRoutes);
+app.use('/api/schedules', schedulerRoutes);
 
 mongoose.connect(process.env.DB_URI, {
   useNewUrlParser: true,
