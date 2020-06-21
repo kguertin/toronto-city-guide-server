@@ -10,4 +10,6 @@ router.post('/findUser', isAuth, userController.findUser)
 
 router.post('/addContact', isAuth, userController.addContact)
 
+router.post('/addFavourite', isAuth, userController.addFavourite)
+
 module.exports = router

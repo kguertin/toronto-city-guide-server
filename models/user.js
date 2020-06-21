@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
   },
   contact: {
     type: []
+  },
+  favourite: {
+    type: []
   }
 })
 
