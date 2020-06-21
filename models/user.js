@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   contact: {
     type: []
   },
-  favourite: {
+  favourites: {
     type: []
   }
 })
