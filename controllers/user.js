@@ -47,6 +47,19 @@ exports.addContact = (req, res) => {
     res.json({userData})
 }
 
+exports.addFavourite = (req, res) => {
+    const { place } = req.body;
+    User.findById(req.user)
+        .then(user => {
+            user.favourites.push(place);
+            user.save();
+        })
+    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
+    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
+    res.json({ place })
+}
+
+
 // // Cast to number failed for value "bar" at path "age"
 // await Person.updateOne({}, { age: 'bar' });
 
