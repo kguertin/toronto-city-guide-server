@@ -6,7 +6,8 @@ exports.getActiveUser = async (req, res) => {
     res.json({
         username: user.username,
         id: user._id,
-        contacts: user.contact
+        contacts: user.contact,
+        contactId: undefined
     })
 }
 
