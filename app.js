@@ -3,10 +3,14 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
+const socketio = require('socket.io')
 
 const PORT = process.env.PORT;
 
 const app = express();
+const server =  http.createServer(app);
+const io = socketio(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -14,6 +18,15 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cors());
+
+io.on("connection", socket => {
+  console.log('connected');
+  // socket.emit('connect', {hello: 'world'});
+  // socket.on('response', data => {
+  //     console.log(data);
+  // })
+  // socket.on('disconnect')
+})
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -29,6 +42,6 @@ mongoose.connect(process.env.DB_URI, {
   useCreateIndex: true
 })
 
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   })
