@@ -22,31 +22,37 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 io.on("connection", socket => {
+  let currentRoom;
+
   socket.on('userData', async data =>{
     const {userId, contactId} = data;
     const messageData = await Message.find({users: userId});
-    console.log(messageData)
-    
     if (!messageData) {
       const newMessages = new Message({users: [userId, contactId], messages: []});
-      const savedMessages = await newMessages.save();
-      
+      currentRoom = await newMessages.save();
     }
 
-    const currentRoom = messageData.filter(i => {
+    currentRoom = messageData.filter(i => {
       if (i.users.includes(userId) && i.users.includes(contactId)){
         return i;
       }
-    })
-
-
-    })
-
+    }); 
   })
+
+  socket.on('clientMessage', async message => {
+    currentRoom.messages.push({
+      sentById: req.user,
+      test: message,
+      timestamp: Date.now()
+    })
+
+    socket.join(currentRoom._id).emit(message)
+  })
+})
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const schedulerRoutes = require('./routes/schedule')
+const schedulerRoutes = require('./routes/schedule');
 
 app.use('/auth', authRoutes);
 app.use(userRoutes);
