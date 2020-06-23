@@ -9,6 +9,7 @@ exports.getActiveUser = async (req, res) => {
         username: user.username,
         id: user._id,
         contacts: user.contact,
+        contactId: undefined,
         schedules: user.schedules
     })
 }

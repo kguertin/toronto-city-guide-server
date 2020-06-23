@@ -3,10 +3,16 @@ const express = require("express");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const http = require('http');
+const socketio = require('socket.io');
+
+const Message = require('./models/message');
 
 const PORT = process.env.PORT;
 
 const app = express();
+const server =  http.createServer(app);
+const io = socketio(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -14,6 +20,29 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cors());
+
+io.on("connection", socket => {
+  socket.on('userData', async data =>{
+    const {userId, contactId} = data;
+    const messageData = await Message.find({users: userId});
+    console.log(messageData)
+    
+    if (!messageData) {
+      const newMessages = new Message({users: [userId, contactId], messages: []});
+      const savedMessages = await newMessages.save();
+      
+    }
+
+    const currentRoom = messageData.filter(i => {
+      if (i.users.includes(userId) && i.users.includes(contactId)){
+        return i;
+      }
+    })
+
+
+    })
+
+  })
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
@@ -29,6 +58,6 @@ mongoose.connect(process.env.DB_URI, {
   useCreateIndex: true
 })
 
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   })
