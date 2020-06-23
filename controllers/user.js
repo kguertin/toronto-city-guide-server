@@ -2,13 +2,18 @@ const User = require('../models/user');
 
 
 exports.getActiveUser = async (req, res) => {
-    const user = await User.findById(req.user);
+    const user = await User.findById(req.user)
+ //   await user.populate('schedule').execPopulate()
+    console.log('user',user);
     res.json({
         username: user.username,
         id: user._id,
-        contacts: user.contact
+        contacts: user.contact,
+        schedules: user.schedules
     })
 }
+
+
 
 exports.findUser = async (req, res) => {
     const { username } = req.body;
