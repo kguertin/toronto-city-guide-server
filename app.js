@@ -38,16 +38,31 @@ io.on("connection", socket => {
         return i;
       }
     }); 
-
     socket.emit('roomData', currentRoom[0]);
   })
 
+
   socket.on('join', roomId => {
+
     socket.emit('joinResponse', `Connected to room ${roomId}`)
-  })
+  });
 
   socket.on('clientMessage', data => {
-    console.log(data)
+    console.log('CLIENT SIDE DATA: ', data);
+    const newData = data;
+    const newHistory = data.messages.messageHistory;
+    newHistory.push(data.message);
+    newData.messages = {...data, messageHistory: newHistory};
+    
+    console.log('NEW HISTORY: ', newHistory);
+
+      Message.findByIdAndUpdate({_id: data.messages._id}, {messageHistory: newHistory})
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+
+    console.log('NEW DATA:', newData);
+    socket.emit('serverMessage', newData);
+    
     
   })
 
