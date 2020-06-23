@@ -22,37 +22,50 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 io.on("connection", socket => {
-  let currentRoom;
-
   socket.on('userData', async data =>{
     const {userId, contactId} = data;
     const messageData = await Message.find({users: userId});
-    if (!messageData) {
+    
+    if (!messageData || messageData.length < 1 ) {
       const newMessages = new Message({users: [userId, contactId], messages: []});
-      currentRoom = await newMessages.save();
+      const savedMessages = await newMessages.save();
+      socket.emit('roomData', savedMessages);
+      return 
     }
 
-    currentRoom = messageData.filter(i => {
+    const currentRoom = messageData.filter(i => {
       if (i.users.includes(userId) && i.users.includes(contactId)){
         return i;
       }
     }); 
+
+    socket.emit('roomData', currentRoom[0]);
   })
 
-  socket.on('clientMessage', async message => {
-    currentRoom.messages.push({
-      sentById: req.user,
-      test: message,
-      timestamp: Date.now()
-    })
-
-    socket.join(currentRoom._id).emit(message)
+  socket.on('join', roomId => {
+    socket.emit('joinResponse', `Connected to room ${roomId}`)
   })
+
+  socket.on('clientMessage', data => {
+    console.log(data)
+    
+  })
+
+
+    // socket.on('clientMessage', async message => {
+  //   currentRoom.messages.push({
+  //     sentById: req.user,
+  //     test: message,
+  //     timestamp: Date.now()
+  //   })
+
+  //   // socket.join(currentRoom._id).emit(message)
 })
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const schedulerRoutes = require('./routes/schedule');
+const { on } = require('process');
 
 app.use('/auth', authRoutes);
 app.use(userRoutes);
