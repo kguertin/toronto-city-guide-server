@@ -1,4 +1,5 @@
 const Schedule = require("../models/schedule");
+const User = require('../models/user');
 
 exports.postSchedule = async (req, res) => {
   try {
@@ -13,6 +14,11 @@ exports.postSchedule = async (req, res) => {
         .json({ msg: "Make sure title and description is filled" });
     }
     const savedSchedule = await schedule.save();
+    const user = await User.findById(req.user);
+    console.log('savedobj',savedSchedule);
+    console.log('');
+    user['schedules'].push(savedSchedule._id);
+    user.save();
     if (!savedSchedule) {
       res.status(401).json({ msg: "Please enter a valid username" });
     }
@@ -23,6 +29,11 @@ exports.postSchedule = async (req, res) => {
 };
 
 exports.getSchedules = async (req, res) => {
+  const user = await User.findById(req.user);
   const schedules = await Schedule.find();
-  res.json({ msg: "Schedule Created", schedules: schedules });
+  const filtered = schedules.filter(i => {
+    return user['schedules'].includes(i._id);
+  })
+  console.log("filtered", filtered)
+  res.json({ msg: "Schedule Created", schedules: filtered });
 };

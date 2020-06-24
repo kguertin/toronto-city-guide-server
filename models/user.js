@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -16,7 +17,14 @@ const userSchema = new mongoose.Schema({
   },
   contact: {
     type: []
-  }
+  },
+  favourites: {
+    type: []
+  },
+  schedules: [
+    {type: Schema.Types.ObjectId, 
+      ref: 'Schedule'}
+    ]
 })
 
 

@@ -2,13 +2,19 @@ const User = require('../models/user');
 
 
 exports.getActiveUser = async (req, res) => {
-    const user = await User.findById(req.user);
+    const user = await User.findById(req.user)
+ //   await user.populate('schedule').execPopulate()
+    console.log('user',user);
     res.json({
         username: user.username,
         id: user._id,
-        contacts: user.contact
+        contacts: user.contact,
+        contactId: undefined,
+        schedules: user.schedules
     })
 }
+
+
 
 exports.findUser = async (req, res) => {
     const { username } = req.body;
@@ -46,6 +52,19 @@ exports.addContact = (req, res) => {
     // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
     res.json({userData})
 }
+
+exports.addFavourite = (req, res) => {
+    const { place } = req.body;
+    User.findById(req.user)
+        .then(user => {
+            user.favourites.push(place);
+            user.save();
+        })
+    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
+    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
+    res.json({ place })
+}
+
 
 // // Cast to number failed for value "bar" at path "age"
 // await Person.updateOne({}, { age: 'bar' });
