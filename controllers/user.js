@@ -3,7 +3,7 @@ const User = require('../models/user');
 
 exports.getActiveUser = async (req, res) => {
     const user = await User.findById(req.user)
- //   await user.populate('schedule').execPopulate()
+//    await user.populate('schedule').execPopulate()
     console.log('user',user);
     res.json({
         username: user.username,

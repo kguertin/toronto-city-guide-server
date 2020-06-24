@@ -24,7 +24,7 @@ app.use(cors());
 io.on("connection", socket => {
   socket.on('userData', async data =>{
     const {userId, contactId} = data;
-    const messageData = await Message.find({users: userId});
+    const messageData = await Message.find();
     
     if (!messageData || messageData.length < 1 ) {
       const newMessages = new Message({users: [userId, contactId], messages: []});
@@ -38,12 +38,13 @@ io.on("connection", socket => {
         return i;
       }
     }); 
+    console.log('CURRENT ROOM: ', currentRoom)
+
     socket.emit('roomData', currentRoom[0]);
   })
 
 
   socket.on('join', roomId => {
-
     socket.emit('joinResponse', `Connected to room ${roomId}`)
   });
 
@@ -70,16 +71,6 @@ io.on("connection", socket => {
     
     
   })
-
-
-    // socket.on('clientMessage', async message => {
-  //   currentRoom.messages.push({
-  //     sentById: req.user,
-  //     test: message,
-  //     timestamp: Date.now()
-  //   })
-
-  //   // socket.join(currentRoom._id).emit(message)
 })
 
 const authRoutes = require('./routes/auth');
