@@ -52,11 +52,12 @@ io.on("connection", socket => {
     const newData = data;
     const newHistory = data.messages.messageHistory;
     newHistory.push(data.message);
-    newData.messages = {...data, messageHistory: newHistory};
+    newData.messages = {...data.messages, messageHistory: newHistory};
     
     console.log('NEW HISTORY: ', newHistory);
-
-      Message.findByIdAndUpdate({_id: data.messages._id}, {messageHistory: newHistory})
+    const query = {_id: data.messages._id}
+    console.log('QUERY: ', query)
+      Message.findByIdAndUpdate(query, {messageHistory: newHistory})
       .then(res => console.log(res))
       .catch(err => console.log(err));
 
