@@ -5,7 +5,7 @@ const messageSchema = new mongoose.Schema({
         type: [],
         require: true
     },
-    messages: {
+    messageHistory: {
         type: [],
         required: true
     }
