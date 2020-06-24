@@ -51,7 +51,11 @@ io.on("connection", socket => {
     console.log('CLIENT SIDE DATA: ', data);
     const newData = data;
     const newHistory = data.messages.messageHistory;
-    newHistory.push(data.message);
+    newHistory.push({
+      text: data.message,
+      senderId: data.userId,
+      timeStamp: Date.now()
+    });
     newData.messages = {...data.messages, messageHistory: newHistory};
     
     console.log('NEW HISTORY: ', newHistory);
