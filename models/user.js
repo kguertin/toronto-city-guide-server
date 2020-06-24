@@ -35,4 +35,3 @@ module.exports = User = mongoose.model("user", userSchema);
 // some relation to chat, maybe an external library handles this?
 // schedule 
 //
-// stories: [{ type: Schema.Types.ObjectId, ref: 'Story' }]
