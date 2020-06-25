@@ -60,9 +60,14 @@ exports.addFavourite = (req, res) => {
             user.favourites.push(place);
             user.save();
         })
-    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
-    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
     res.json({ place })
+}
+
+exports.getFavourites = async (req, res) => {
+    console.log("HIT ROUTE")
+    let favouritesData = await User.findById(req.user)
+    favouritesData = favouritesData.favourites
+    res.json({ favourites: favouritesData })
 }
 
 
