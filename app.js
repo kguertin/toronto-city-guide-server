@@ -50,7 +50,6 @@ io.on("connection", socket => {
   });
 
   socket.on('clientMessage', data => {
-    console.log('CLIENT SIDE DATA: ', data);
     const newData = data;
     const newHistory = data.messages.messageHistory;
     newHistory.push({
