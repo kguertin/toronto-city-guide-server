@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 io.on("connection", socket => {
+  let roomId;
   socket.on('userData', async data =>{
     const {userId, contactId} = data;
     const messageData = await Message.find();
@@ -38,13 +39,13 @@ io.on("connection", socket => {
         return i;
       }
     }); 
-    console.log('CURRENT ROOM: ', currentRoom)
 
     socket.emit('roomData', currentRoom[0]);
   })
 
 
   socket.on('join', roomId => {
+    roomId = roomId
     socket.emit('joinResponse', `Connected to room ${roomId}`)
   });
 
@@ -59,16 +60,12 @@ io.on("connection", socket => {
     });
     newData.messages = {...data.messages, messageHistory: newHistory};
     
-    console.log('NEW HISTORY: ', newHistory);
     const query = {_id: data.messages._id}
-    console.log('QUERY: ', query)
       Message.findByIdAndUpdate(query, {messageHistory: newHistory})
       .then(res => console.log(res))
       .catch(err => console.log(err));
-
-    console.log('NEW DATA:', newData);
-    socket.emit('serverMessage', newData);
-    
+    socket.join(roomId)
+    socket.broadcast.to(roomId).emit('serverMessage', newData);
     
   })
 })
