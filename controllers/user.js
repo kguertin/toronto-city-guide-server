@@ -10,10 +10,10 @@ exports.getActiveUser = async (req, res) => {
         id: user._id,
         contacts: user.contact,
         contactId: undefined,
-        schedules: user.schedules
+        schedules: user.schedules,
+        favourites: user.favourites
     })
 }
-
 
 
 exports.findUser = async (req, res) => {
