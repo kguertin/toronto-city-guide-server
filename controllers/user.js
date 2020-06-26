@@ -10,11 +10,10 @@ exports.getActiveUser = async (req, res) => {
         id: user._id,
         contacts: user.contact,
         contactId: undefined,
-        schedules: user.schedules
+        schedules: user.schedules,
+        favourites: user.favourites
     })
 }
-
-
 
 exports.findUser = async (req, res) => {
     const { username } = req.body;
@@ -60,9 +59,13 @@ exports.addFavourite = (req, res) => {
             user.favourites.push(place);
             user.save();
         })
-    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
-    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
     res.json({ place })
+}
+
+exports.getFavourites = async (req, res) => {
+    let favouritesData = await User.findById(req.user)
+    favouritesData = favouritesData.favourites
+    res.json({ favourites: favouritesData })
 }
 
 

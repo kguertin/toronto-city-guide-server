@@ -12,4 +12,6 @@ router.post('/addContact', isAuth, userController.addContact)
 
 router.post('/addFavourite', isAuth, userController.addFavourite)
 
+router.get('/getFavourites', isAuth, userController.getFavourites)
+
 module.exports = router
