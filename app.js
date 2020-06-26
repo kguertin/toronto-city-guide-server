@@ -22,9 +22,10 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 
 io.on("connection", socket => {
+  let roomId;
   socket.on('userData', async data =>{
     const {userId, contactId} = data;
-    const messageData = await Message.find({users: userId});
+    const messageData = await Message.find();
     
     if (!messageData || messageData.length < 1 ) {
       const newMessages = new Message({users: [userId, contactId], messages: []});
@@ -38,17 +39,17 @@ io.on("connection", socket => {
         return i;
       }
     }); 
+
     socket.emit('roomData', currentRoom[0]);
   })
 
 
   socket.on('join', roomId => {
-
+    roomId = roomId
     socket.emit('joinResponse', `Connected to room ${roomId}`)
   });
 
   socket.on('clientMessage', data => {
-    console.log('CLIENT SIDE DATA: ', data);
     const newData = data;
     const newHistory = data.messages.messageHistory;
     newHistory.push({
@@ -58,28 +59,14 @@ io.on("connection", socket => {
     });
     newData.messages = {...data.messages, messageHistory: newHistory};
     
-    console.log('NEW HISTORY: ', newHistory);
     const query = {_id: data.messages._id}
-    console.log('QUERY: ', query)
       Message.findByIdAndUpdate(query, {messageHistory: newHistory})
       .then(res => console.log(res))
       .catch(err => console.log(err));
-
-    console.log('NEW DATA:', newData);
-    socket.emit('serverMessage', newData);
-    
+    socket.join(roomId)
+    socket.broadcast.to(roomId).emit('serverMessage', newData);
     
   })
-
-
-    // socket.on('clientMessage', async message => {
-  //   currentRoom.messages.push({
-  //     sentById: req.user,
-  //     test: message,
-  //     timestamp: Date.now()
-  //   })
-
-  //   // socket.join(currentRoom._id).emit(message)
 })
 
 const authRoutes = require('./routes/auth');
