@@ -15,7 +15,6 @@ exports.getActiveUser = async (req, res) => {
     })
 }
 
-
 exports.findUser = async (req, res) => {
     const { username } = req.body;
     
@@ -64,7 +63,6 @@ exports.addFavourite = (req, res) => {
 }
 
 exports.getFavourites = async (req, res) => {
-    console.log("HIT ROUTE")
     let favouritesData = await User.findById(req.user)
     favouritesData = favouritesData.favourites
     res.json({ favourites: favouritesData })
