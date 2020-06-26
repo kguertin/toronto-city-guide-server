@@ -11,7 +11,7 @@ const Message = require('./models/message');
 const PORT = process.env.PORT;
 
 const app = express();
-const server =  http.createServer(app);
+const server = http.createServer(app);
 const io = socketio(server);
 
 app.use(bodyParser.json());
@@ -21,27 +21,51 @@ app.use(bodyParser.urlencoded({
 
 app.use(cors());
 
+let roomId
 io.on("connection", socket => {
+  console.log('connected')
+
+  socket.on('joinroom', data => {
+    // console.log(data)
+    roomId = data
+    socket.join(data)
+  });
+
   
-  socket.on('userData', async data =>{
-    const {userId, contactId} = data;
-    const messageData = await Message.find();
-    
-    if (!messageData || messageData.length < 1 ) {
-      const newMessages = new Message({users: [userId, contactId], messages: []});
-      const savedMessages = await newMessages.save();
-      socket.emit('roomData', savedMessages);
-      return 
-    }
-    
-    const currentRoom = messageData.filter(i => {
-      if (i.users.includes(userId) && i.users.includes(contactId)){
-        return i;
-      }
-    }); 
-    socket.emit('roomData', currentRoom[0]);
+  socket.on('update', async data => {
+    console.log("update", data)
   });
   
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+})
+
+let nsp = io.of(`/${roomId}`);
+nsp.on('connection', socket => {
+  console.log(`someone connected to ${roomId}`);
+  nsp.emit('hi', 'everyone!');
+});
+
+// socket.on('userData', async data =>{
+//   const {userId, contactId} = data;
+//   const messageData = await Message.find();
+
+//   if (!messageData || messageData.length < 1 ) {
+//     const newMessages = new Message({users: [userId, contactId], messages: []});
+//     const savedMessages = await newMessages.save();
+//     socket.emit('roomData', savedMessages);
+//     return 
+//   }
+
+//   const currentRoom = messageData.filter(i => {
+//     if (i.users.includes(userId) && i.users.includes(contactId)){
+//       return i;
+//     }
+//   }); 
+//   socket.emit('roomData', currentRoom[0]);
+// });
+
 //   socket.on('clientMessage', data => {
 //     const newData = data;
 //     const newHistory = data.messages.messageHistory;
@@ -51,7 +75,7 @@ io.on("connection", socket => {
 //       timeStamp: Date.now()
 //     });
 //     newData.messages = {...newData.messages, messageHistory: newHistory};
-    
+
 //     const query = {_id: data.messages._id}
 //     Message.findByIdAndUpdate(query, {messageHistory: newHistory})
 //     .then(res => console.log(res))
@@ -59,15 +83,14 @@ io.on("connection", socket => {
 //     // socket.join(data.messages._id)
 //     // socket.to(roomId).emit('serverMessage', newData)
 //     socket.emit('serverMessage', newData);
-    
+
 //   })
-})
-  
-  const authRoutes = require('./routes/auth');
-  const userRoutes = require('./routes/user');
-  const schedulerRoutes = require('./routes/schedule');
-  const { on } = require('process');
-  
+
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+const schedulerRoutes = require('./routes/schedule');
+const { on } = require('process');
+
 app.use('/auth', authRoutes);
 app.use(userRoutes);
 app.use('/api/schedules', schedulerRoutes);
@@ -78,6 +101,6 @@ mongoose.connect(process.env.DB_URI, {
   useCreateIndex: true
 })
 
-  server.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`);
-  })
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+})

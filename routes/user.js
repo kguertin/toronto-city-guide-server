@@ -12,4 +12,8 @@ router.post('/addContact', isAuth, userController.addContact)
 
 router.post('/addFavourite', isAuth, userController.addFavourite)
 
+router.post('/getUserMessages', isAuth, userController.getUserMessages);
+
+router.post('/updateUserMessages', isAuth, userController.updateUserMessages)
+
 module.exports = router
