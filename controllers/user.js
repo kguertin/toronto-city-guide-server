@@ -10,7 +10,8 @@ exports.getActiveUser = async (req, res) => {
         id: user._id,
         contacts: user.contact,
         contactId: undefined,
-        schedules: user.schedules
+        schedules: user.schedules,
+        favourites: user.favourites
     })
 }
 
@@ -58,8 +59,6 @@ exports.addFavourite = (req, res) => {
             user.favourites.push(place);
             user.save();
         })
-    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
-    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
     res.json({ place })
 }
 
@@ -145,6 +144,13 @@ exports.updateUserMessages = async (req, res) => {
 //     socket.emit('serverMessage', newData);
 
 //   })
+
+exports.getFavourites = async (req, res) => {
+    let favouritesData = await User.findById(req.user)
+    favouritesData = favouritesData.favourites
+    res.json({ favourites: favouritesData })
+}
+
 
 // // Cast to number failed for value "bar" at path "age"
 // await Person.updateOne({}, { age: 'bar' });

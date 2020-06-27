@@ -1,14 +1,23 @@
 const Schedule = require("../models/schedule");
-const User = require('../models/user');
-const moment = require('moment-timezone');
-
+const User = require("../models/user");
+const moment = require("moment-timezone");
+//const moment = require('moment');
 exports.postSchedule = async (req, res) => {
   try {
+    console.log("date in req:", req.body.bookedDate);
+    // console.log('moment',moment(req.body.bookedDate).zone("America/Toronto").format("YYYY-MM-DD HH:mm"));
+    console.log(
+      "moment",
+      moment.utc(req.body.bookedDate).utcOffset(-240).format("YYYY-MM-DD HH:mm")
+    );
     const schedule = new Schedule({
       title: req.body.title,
       description: req.body.description,
-      bookedDate: moment(req.body.bookedDate).tz('America/Toronto').format("YYYY-MM-DD HH:mm")
-      //req.body.bookedDate
+      bookedDate: moment
+        .utc(req.body.bookedDate)
+        .utcOffset(-240)
+        .format("YYYY-MM-DD HH:mm")
+
     });
     if (!req.body.title || !req.body.description) {
       res
@@ -17,9 +26,8 @@ exports.postSchedule = async (req, res) => {
     }
     const savedSchedule = await schedule.save();
     const user = await User.findById(req.user);
-    console.log('savedobj',savedSchedule);
-    console.log('');
-    user['schedules'].push(savedSchedule._id);
+
+    user["schedules"].push(savedSchedule._id);
     user.save();
     if (!savedSchedule) {
       res.status(401).json({ msg: "Please enter a valid username" });
@@ -33,9 +41,20 @@ exports.postSchedule = async (req, res) => {
 exports.getSchedules = async (req, res) => {
   const user = await User.findById(req.user);
   const schedules = await Schedule.find();
-  let filtered = schedules.filter(i => {
-    return user['schedules'].includes(i._id);
-  })
-  console.log("filtered", filtered);
+  let filtered = schedules.filter((i) => {
+    return user["schedules"].includes(i._id);
+  });
+
+  filtered = filtered.sort((a1, a2) => {
+    return a1["bookedDate"].getTime() - a2["bookedDate"].getTime();
+  });
+
+  filtered = filtered.map((each) => {
+    each["bookedDate"] = moment
+      .utc(each["bookedDate"].toString());
+      
+    return each;
+  });
+
   res.json({ msg: "Schedule Created", schedules: filtered });
 };
