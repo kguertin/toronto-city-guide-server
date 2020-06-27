@@ -84,14 +84,19 @@ exports.getUserMessages = async (req, res) => {
 }
 
 exports.updateUserMessages = async (req, res) => {
-    const { newMessage, messagesId } = req.body
-    // console.log("updateUserMessages", newMessage, messagesId)
+    try {
+        const { newMessage, messagesId } = req.body
+        // console.log("updateUserMessages", newMessage, messagesId)
+    
+        const query = {_id: messagesId}
+        const messages = await Message.findById(query)
+        const newMessageHistory = [...messages.messageHistory, newMessage]
+        messages.messageHistory = newMessageHistory
+        messages.save();
 
-    const query = {_id: messagesId}
-    const messages = await Message.findById(query)
-    const newMessageHistory = [...messages.messageHistory, newMessage]
-    messages.messageHistory = newMessageHistory
-    messages.save();
+    } catch (err) {
+        console.log(err)
+    }
 
     // io.emit('update', newMessage);
     // io.to(messagesId).emit('update', newMessage);

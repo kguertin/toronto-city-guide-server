@@ -21,31 +21,33 @@ app.use(bodyParser.urlencoded({
 
 app.use(cors());
 
-let roomId
 io.on("connection", socket => {
-  console.log('connected')
+  let roomId;
+  console.log('connected');
+  
 
   socket.on('joinroom', data => {
-    // console.log(data)
     roomId = data
-    socket.join(data)
-  });
-
+    socket.join(roomId);
+  }); 
   
   socket.on('update', async data => {
-    console.log("update", data)
+    const {senderId, messages} = data;
+      const sendTo = messages.users.filter(i => i !== senderId)[0];
+      socket.to(sendTo).emit('newMessage', data)
   });
+  
   
   socket.on('disconnect', () => {
     console.log('A user disconnected');
   });
-})
+  })
 
-let nsp = io.of(`/${roomId}`);
-nsp.on('connection', socket => {
-  console.log(`someone connected to ${roomId}`);
-  nsp.emit('hi', 'everyone!');
-});
+// let nsp = io.of(`/${roomId}`);
+// nsp.on('connection', socket => {
+//   console.log(`someone connected to ${roomId}`);
+//   nsp.emit('hi', 'everyone!');
+// });
 
 // socket.on('userData', async data =>{
 //   const {userId, contactId} = data;
