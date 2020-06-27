@@ -27,11 +27,14 @@ io.on("connection", socket => {
   
 
   socket.on('joinroom', data => {
-    roomId = data
+    roomId = data.id
     socket.join(roomId);
+    console.log(io.sockets.adapter.rooms[roomId])
   }); 
   
   socket.on('update', async data => {
+    console.log(data)
+    console.log(io.sockets.adapter.rooms[roomId])
     const {senderId, messages} = data;
       const sendTo = messages.users.filter(i => i !== senderId)[0];
       socket.to(sendTo).emit('newMessage', data)
