@@ -16,40 +16,56 @@ exports.getActiveUser = async (req, res) => {
 }
 
 exports.findUser = async (req, res) => {
-    const { username } = req.body;
+    try {
+        const { username } = req.body;
+    
+        const currentUser = await User.findById(req.user);
 
-    const currentUser = await User.findById(req.user);
-    if (currentUser.username === username) {
-        res.status(400).json({ msg: 'Cant add yourself!' });
-    }
-
-    const isContact = currentUser.contact.find(i => {
-        return i.username === username;
-    })
-
-    if (isContact) {
-        return res.status(400).json({ msg: 'User already a contact' });
-    }
-
-    User.findOne({ username })
-        .then(user => {
-            res.json({
-                username: user.username,
-                id: user._id
-            })
+        if (currentUser.username === username) {
+            res.status(400).json({ msg: 'Cant add yourself!' });
+        }
+    
+        const isContact = currentUser.contact.find(i => {
+            return i.username === username;
         })
+    
+        if (isContact) {
+            return res.status(400).json({ msg: 'User already a contact' });
+        }
+    
+        const newContact = await User.findOne({ username });
+
+        if (!newContact) {
+            return res.status(400).json({msg: 'That user does not exist'});
+        }
+
+        return res.json({username: newContact.username, id: newContact._id});
+
+    } catch (err) {
+        console.log(err);
+    }
 }
 
-exports.addContact = (req, res) => {
-    const { userData } = req.body;
-    User.findById(req.user)
-        .then(user => {
-            user.contact.push(userData);
-            user.save();
-        })
-    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
-    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
-    res.json({ userData })
+exports.addContact = async (req, res) => {
+    try {
+        const { userData } = req.body;
+    
+        const findUser = await User.findById(req.user);
+
+        const includesUser = findUser.contact.find(i => i.username === userData.username);
+        
+        if (includesUser) {
+            return res.status(400).json({msg: 'That contact has already been added'})
+        }
+
+        findUser.contact.push(userData);
+        findUser.save();
+        
+        return res.json({ userData })
+        
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 exports.addFavourite = (req, res) => {
@@ -91,8 +107,7 @@ exports.getUserMessages = async (req, res) => {
 exports.updateUserMessages = async (req, res) => {
     try {
         const { newMessage, messagesId } = req.body
-        // console.log("updateUserMessages", newMessage, messagesId)
-    
+
         const query = {_id: messagesId}
         const messages = await Message.findById(query)
         const newMessageHistory = [...messages.messageHistory, newMessage]
