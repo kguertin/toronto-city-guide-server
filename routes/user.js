@@ -16,4 +16,7 @@ router.post('/getUserMessages', isAuth, userController.getUserMessages);
 
 router.post('/updateUserMessages', isAuth, userController.updateUserMessages)
 
+router.get('/getFavourites', isAuth, userController.getFavourites)
+
+
 module.exports = router
