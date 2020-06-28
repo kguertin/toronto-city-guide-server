@@ -66,11 +66,8 @@ exports.removeFavourite = (req, res) => {
     const { place } = req.body;
     User.findById(req.user)
         .then(user => {
-            User.deleteOne({favourites: place}, function (err) {
-                if (err) console.log(err);
-                console.log("Removed favourite");
-            })
-            user.save();
+            user.favourites = user.favourites.filter(fave => fave.name != place[1])
+            user.save();    
         })
     res.json({ place })
 }
