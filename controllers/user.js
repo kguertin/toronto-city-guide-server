@@ -16,32 +16,38 @@ exports.getActiveUser = async (req, res) => {
 }
 
 exports.findUser = async (req, res) => {
-    const { username } = req.body;
-
-    const currentUser = await User.findById(req.user);
-    if (currentUser.username === username) {
-        res.status(400).json({ msg: 'Cant add yourself!' });
-    }
-
-    const isContact = currentUser.contact.find(i => {
-        return i.username === username;
-    })
-
-    if (isContact) {
-        return res.status(400).json({ msg: 'User already a contact' });
-    }
-
-    User.findOne({ username })
-        .then(user => {
-            res.json({
-                username: user.username,
-                id: user._id
-            })
+    try {
+        const { username } = req.body;
+    
+        const currentUser = await User.findById(req.user);
+        if (currentUser.username === username) {
+            res.status(400).json({ msg: 'Cant add yourself!' });
+        }
+    
+        const isContact = currentUser.contact.find(i => {
+            return i.username === username;
         })
+    
+        if (isContact) {
+            return res.status(400).json({ msg: 'User already a contact' });
+        }
+    
+        const findUser = await User.findOne({ username });
+
+        if (!findUser) {
+            return res.status(400).json({msg: 'That user does not exist'});
+        }
+
+        return res.json({username: user.username, id: user._id});
+
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 exports.addContact = (req, res) => {
     const { userData } = req.body;
+    console.log(userData)
     User.findById(req.user)
         .then(user => {
             user.contact.push(userData);
@@ -91,8 +97,7 @@ exports.getUserMessages = async (req, res) => {
 exports.updateUserMessages = async (req, res) => {
     try {
         const { newMessage, messagesId } = req.body
-        // console.log("updateUserMessages", newMessage, messagesId)
-    
+
         const query = {_id: messagesId}
         const messages = await Message.findById(query)
         const newMessageHistory = [...messages.messageHistory, newMessage]
