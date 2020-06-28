@@ -46,51 +46,6 @@ io.on("connection", socket => {
   });
   })
 
-// let nsp = io.of(`/${roomId}`);
-// nsp.on('connection', socket => {
-//   console.log(`someone connected to ${roomId}`);
-//   nsp.emit('hi', 'everyone!');
-// });
-
-// socket.on('userData', async data =>{
-//   const {userId, contactId} = data;
-//   const messageData = await Message.find();
-
-//   if (!messageData || messageData.length < 1 ) {
-//     const newMessages = new Message({users: [userId, contactId], messages: []});
-//     const savedMessages = await newMessages.save();
-//     socket.emit('roomData', savedMessages);
-//     return 
-//   }
-
-//   const currentRoom = messageData.filter(i => {
-//     if (i.users.includes(userId) && i.users.includes(contactId)){
-//       return i;
-//     }
-//   }); 
-//   socket.emit('roomData', currentRoom[0]);
-// });
-
-//   socket.on('clientMessage', data => {
-//     const newData = data;
-//     const newHistory = data.messages.messageHistory;
-//     newHistory.push({
-//       text: data.message,
-//       senderId: data.userId,
-//       timeStamp: Date.now()
-//     });
-//     newData.messages = {...newData.messages, messageHistory: newHistory};
-
-//     const query = {_id: data.messages._id}
-//     Message.findByIdAndUpdate(query, {messageHistory: newHistory})
-//     .then(res => console.log(res))
-//     .catch(err => console.log(err));
-//     // socket.join(data.messages._id)
-//     // socket.to(roomId).emit('serverMessage', newData)
-//     socket.emit('serverMessage', newData);
-
-//   })
-
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const schedulerRoutes = require('./routes/schedule');
