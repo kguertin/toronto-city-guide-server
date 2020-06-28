@@ -103,13 +103,6 @@ exports.updateUserMessages = async (req, res) => {
         console.log(err)
     }
 
-    // io.emit('update', newMessage);
-    // io.to(messagesId).emit('update', newMessage);
-
-    // socket.join(data.messages._id)
-    // socket.to(roomId).emit('serverMessage', newData)
-    // socket.emit('serverMessage', newData);
-
 }
 
 // socket.on('userData', async data =>{
