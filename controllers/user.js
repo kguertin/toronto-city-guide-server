@@ -62,6 +62,19 @@ exports.addFavourite = (req, res) => {
     res.json({ place })
 }
 
+exports.removeFavourite = (req, res) => {
+    const { place } = req.body;
+    User.findById(req.user)
+        .then(user => {
+            User.deleteOne({favourites: place}, function (err) {
+                if (err) console.log(err);
+                console.log("Removed favourite");
+            })
+            user.save();
+        })
+    res.json({ place })
+}
+
 exports.getUserMessages = async (req, res) => {
     const { userId, contactId } = req.body
     const messageData = await Message.find();
