@@ -20,6 +20,7 @@ exports.findUser = async (req, res) => {
         const { username } = req.body;
     
         const currentUser = await User.findById(req.user);
+
         if (currentUser.username === username) {
             res.status(400).json({ msg: 'Cant add yourself!' });
         }
@@ -32,30 +33,39 @@ exports.findUser = async (req, res) => {
             return res.status(400).json({ msg: 'User already a contact' });
         }
     
-        const findUser = await User.findOne({ username });
+        const newContact = await User.findOne({ username });
 
-        if (!findUser) {
+        if (!newContact) {
             return res.status(400).json({msg: 'That user does not exist'});
         }
 
-        return res.json({username: user.username, id: user._id});
+        return res.json({username: newContact.username, id: newContact._id});
 
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
 }
 
-exports.addContact = (req, res) => {
-    const { userData } = req.body;
-    console.log(userData)
-    User.findById(req.user)
-        .then(user => {
-            user.contact.push(userData);
-            user.save();
-        })
-    // Person.updateOne({'_id': req.user}, {'contact': {userData}});
-    // User.update({'_id': req.user}, { $set: {$push : {'contact': userData}}} )
-    res.json({ userData })
+exports.addContact = async (req, res) => {
+    try {
+        const { userData } = req.body;
+    
+        const findUser = await User.findById(req.user);
+
+        const includesUser = findUser.contact.find(i => i.username === userData.username);
+        
+        if (includesUser) {
+            return res.status(400).json({msg: 'That contact has already been added'})
+        }
+
+        findUser.contact.push(userData);
+        findUser.save();
+        
+        return res.json({ userData })
+        
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 exports.addFavourite = (req, res) => {
