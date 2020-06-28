@@ -37,7 +37,7 @@ io.on("connection", socket => {
     console.log(io.sockets.adapter.rooms[roomId])
     const {senderId, messages} = data;
       const sendTo = messages.users.filter(i => i !== senderId)[0];
-      socket.to(sendTo).emit('newMessage', data)
+      socket.to(sendTo).emit('newMessage', data.newMessage)
   });
   
   
