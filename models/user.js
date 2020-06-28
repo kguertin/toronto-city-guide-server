@@ -29,9 +29,3 @@ const userSchema = new mongoose.Schema({
 
 
 module.exports = User = mongoose.model("user", userSchema);
-
-//Things users need 
-// favourited/tagged places however we want to track map pins 
-// some relation to chat, maybe an external library handles this?
-// schedule 
-//
