@@ -63,4 +63,20 @@ mongoose.connect(process.env.DB_URI, {
 
 server.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
-})
+});
+
+
+// sign up logs user in
+// delete button
+// contact shows up after being added dont need to log out. 
+// cant add the same contact if it exists
+// first message to new user??
+// refresh causes loss of data 
+// case where we try to query db with no data. 
+// style
+// deploy (heroku and netlify) git pages 
+// add schedule page
+
+// remove favourites
+// approve conntact addition 
+// share schedule 
