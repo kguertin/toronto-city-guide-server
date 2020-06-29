@@ -60,9 +60,22 @@ exports.addContact = async (req, res) => {
 
         findUser.contact.push(userData);
         findUser.save();
-        
+
         return res.json({ userData })
         
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+exports.removeContact = async (req, res) => {
+    try {
+        const { contactId } = req.body;
+        const userData = await User.findById(req.user);
+        const newContacts = userData.contact.filter(i => i.id !== contactId);
+        userData.contact = newContacts;
+        userData.save();
+        res.status(200).json({msg: 'contact deleted', newContacts});
     } catch (err) {
         console.log(err);
     }
@@ -127,45 +140,6 @@ exports.updateUserMessages = async (req, res) => {
     }
 
 }
-
-// socket.on('userData', async data =>{
-  //   const {userId, contactId} = data;
-  //   const messageData = await Message.find();
-
-  //   if (!messageData || messageData.length < 1 ) {
-  //     const newMessages = new Message({users: [userId, contactId], messages: []});
-  //     const savedMessages = await newMessages.save();
-  //     socket.emit('roomData', savedMessages);
-  //     return 
-  //   }
-
-  //   const currentRoom = messageData.filter(i => {
-  //     if (i.users.includes(userId) && i.users.includes(contactId)){
-  //       return i;
-  //     }
-  //   }); 
-  //   socket.emit('roomData', currentRoom[0]);
-  // });
-
-//   socket.on('clientMessage', data => {
-//     const newData = data;
-//     const newHistory = data.messages.messageHistory;
-//     newHistory.push({
-//       text: data.message,
-//       senderId: data.userId,
-//       timeStamp: Date.now()
-//     });
-//     newData.messages = {...newData.messages, messageHistory: newHistory};
-
-//     const query = {_id: data.messages._id}
-//     Message.findByIdAndUpdate(query, {messageHistory: newHistory})
-//     .then(res => console.log(res))
-//     .catch(err => console.log(err));
-//     // socket.join(data.messages._id)
-//     // socket.to(roomId).emit('serverMessage', newData)
-//     socket.emit('serverMessage', newData);
-
-//   })
 
 exports.getFavourites = async (req, res) => {
     let favouritesData = await User.findById(req.user)

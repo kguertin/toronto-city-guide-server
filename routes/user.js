@@ -10,6 +10,8 @@ router.post('/findUser', isAuth, userController.findUser)
 
 router.post('/addContact', isAuth, userController.addContact)
 
+router.delete('/removeContact', isAuth, userController.removeContact);
+
 router.post('/addFavourite', isAuth, userController.addFavourite)
 
 router.post('/removeFavourite', isAuth, userController.removeFavourite)

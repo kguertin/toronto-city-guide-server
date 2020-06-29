@@ -66,16 +66,20 @@ server.listen(PORT, () => {
 });
 
 
-// sign up logs user in
-// delete button
-// contact shows up after being added dont need to log out. 
-// cant add the same contact if it exists
+// delete button contact (done)
+
+// refresh causes loss of data // state is lost
+
 // first message to new user??
-// refresh causes loss of data 
-// case where we try to query db with no data. 
+
 // style
-// deploy (heroku and netlify) git pages 
+
+// schedule page freaks out after being pushed to home from signup
+
 // add schedule page
+
+// deploy (heroku and netlify) git pages 
+
 
 // remove favourites
 // approve conntact addition 
