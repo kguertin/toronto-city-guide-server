@@ -78,6 +78,14 @@ exports.addFavourite = (req, res) => {
     res.json({ place })
 }
 
+exports.removeFavourite = async (req, res) => {
+    const { place } = req.body;
+    const user = await User.findById(req.user)
+    user.favourites = user.favourites.filter(fave => fave.name != place[1])
+    const favouritesData = await user.save();    
+    res.json({ favouritesData })
+}
+
 exports.getUserMessages = async (req, res) => {
     const { userId, contactId } = req.body
     const messageData = await Message.find();
