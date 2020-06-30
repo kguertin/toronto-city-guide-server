@@ -46,3 +46,19 @@ exports.getSchedules = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
+exports.deleteItem = async (req, res) => {
+  try {
+    const { scheduleId } = req.body
+    let user = await User.findById(req.user);
+    user.schedules = user.schedules.filter(schedule => {
+      if (schedule.id.toString() !== scheduleId.toString()){
+        return schedule;
+      }
+    })
+    const newSchedule = await user.save();
+    res.status(200).json({ msg: "Schedule Deleted", newSchedule});
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
