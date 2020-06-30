@@ -1,6 +1,7 @@
 const Schedule = require("../models/schedule");
 const User = require("../models/user");
 const moment = require("moment-timezone");
+const mongoose = require('mongoose');
 //const moment = require('moment');
 
 exports.postSchedule = async (req, res) => {
@@ -13,6 +14,7 @@ exports.postSchedule = async (req, res) => {
 
     const user = await User.findById(req.user);
     const newSchedule = {
+          id: mongoose.Types.ObjectId(),
           title: req.body.title,
           description: req.body.description,
           bookedDate: moment
