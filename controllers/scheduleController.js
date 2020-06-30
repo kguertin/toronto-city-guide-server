@@ -2,6 +2,7 @@ const Schedule = require("../models/schedule");
 const User = require("../models/user");
 const moment = require("moment-timezone");
 //const moment = require('moment');
+
 exports.postSchedule = async (req, res) => {
   try {
     console.log("date in req:", req.body.bookedDate);
@@ -40,11 +41,18 @@ exports.postSchedule = async (req, res) => {
 
 exports.getSchedules = async (req, res) => {
   const user = await User.findById(req.user);
+  const { selectedDate } = req.body
+  console.log(selectedDate)
   const schedules = await Schedule.find();
   let filtered = schedules.filter((i) => {
     return user["schedules"].includes(i._id);
   });
-
+  // console.log(selectedDate)
+  // const filteredagain = filtered.filter((i) => {
+    // console.log("i", i.bookedDate)
+    // return i.bookedDate.includes(selectedDate);
+  // });
+  // console.log("filteredddddddd", filteredagain)
   filtered = filtered.sort((a1, a2) => {
     return a1["bookedDate"].getTime() - a2["bookedDate"].getTime();
   });
