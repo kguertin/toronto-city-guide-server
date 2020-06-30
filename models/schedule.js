@@ -18,8 +18,6 @@ const scheduleSchema = new mongoose.Schema({
    description:{
      type: String
    }
-   
-
 })
 const Schedule = mongoose.model("schedule",scheduleSchema);
 module.exports = Schedule;
