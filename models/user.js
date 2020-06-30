@@ -21,10 +21,9 @@ const userSchema = new mongoose.Schema({
   favourites: {
     type: []
   },
-  schedules: [
-    {type: Schema.Types.ObjectId, 
-      ref: 'Schedule'}
-    ]
+  schedules: {
+    type: []
+  }
 })
 
 
