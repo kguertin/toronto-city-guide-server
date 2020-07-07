@@ -111,11 +111,15 @@ exports.getUserMessages = async (req, res) => {
         return
     }
     
-    messageHistory = messageData.filter(i => {
+    const messageFilter = messageData.filter(i => {
         if (i.users.includes(userId) && i.users.includes(contactId)) {
             return i;
         }
     });
+
+    if (messageFilter.length){
+        messageHistory = messageFilter[0]
+    }
 
     if (!messageHistory.length){
         const newMessages = new Message({ users: [userId, contactId], messages: [] });
