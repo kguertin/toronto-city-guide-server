@@ -107,7 +107,6 @@ exports.getUserMessages = async (req, res) => {
     if (!messageData || messageData.length < 1) {
         const newMessages = new Message({ users: [userId, contactId], messages: [] });
         messageHistory = await newMessages.save();
-        console.log("THISSSSS", messageHistory)
         res.status(200).json({ messageHistory: messageHistory });
         return
     }
@@ -123,7 +122,7 @@ exports.getUserMessages = async (req, res) => {
         messageHistory = await newMessages.save();
     }
     
-    res.status(200).json({ messageHistory: messageHistory[0] });
+    res.status(200).json({ messageHistory: messageHistory });
 }
 
 exports.updateUserMessages = async (req, res) => {
