@@ -100,6 +100,9 @@ exports.removeFavourite = async (req, res) => {
 }
 
 exports.getUserMessages = async (req, res) => {
+    
+    try {
+
     const { userId, contactId } = req.body
     const messageData = await Message.find();
     let messageHistory
@@ -127,6 +130,11 @@ exports.getUserMessages = async (req, res) => {
     }
     
     res.status(200).json({ messageHistory: messageHistory });
+    
+    } catch (err) {
+        console.log(err);
+        res.status(404).json({ err })
+    }
 }
 
 exports.updateUserMessages = async (req, res) => {
