@@ -145,7 +145,9 @@ exports.updateUserMessages = async (req, res) => {
         const messages = await Message.findById(query)
         const newMessageHistory = [...messages.messageHistory, newMessage]
         messages.messageHistory = newMessageHistory
-        messages.save();
+        const savedMessages = await messages.save();
+
+        res.status(200).json({ savedMessages: savedMessages });
 
     } catch (err) {
         console.log(err)
