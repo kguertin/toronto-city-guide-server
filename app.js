@@ -21,13 +21,6 @@ app.use(bodyParser.urlencoded({
 
 app.use(cors());
 
-// added this for cors debugging
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
-
-
 io.on("connection", socket => {
   let roomId;
   console.log('connected');
