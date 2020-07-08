@@ -120,15 +120,15 @@ exports.getUserMessages = async (req, res) => {
         }
     });
 
+    if (!messageFilter.length){
+        const newMessages = new Message({ users: [userId, contactId], messages: [] });
+        messageHistory = await newMessages.save();
+    }
+
     if (messageFilter.length){
         messageHistory = messageFilter[0]
     }
 
-    if (!messageHistory.length){
-        const newMessages = new Message({ users: [userId, contactId], messages: [] });
-        messageHistory = await newMessages.save();
-    }
-    
     res.status(200).json({ messageHistory: messageHistory });
     
     } catch (err) {
