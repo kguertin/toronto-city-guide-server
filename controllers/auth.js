@@ -1,12 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 const { validationResult } = require('express-validator')
+
+const User = require('../models/user');
 
 exports.postLogin = async (req, res) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()){
-    res.status(422).json({msg: 'There was an error', errors: errors.array()})
+    const error = new Error('Validation Failed');
+    error.statusCode = 422;
+    throw error;
   }
   console.log(errors);
   try {
@@ -33,14 +36,19 @@ exports.postLogin = async (req, res) => {
     }});
     
   } catch (err) {
-    res.status(500).json({msg: err.message})
+    if(!err.statusCode){
+      err.statusCode = 500;
+    }
+    next(err);
   }
 }
 
 exports.postSignUp = async (req, res) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()){
-    res.status(422).json({msg: 'There was an error', errors: errors.array()})
+    const error = new Error('Validation Failed');
+    error.statusCode = 422;
+    throw error;
   }
   try {
     const {username, email, password, confirmPassword} = req.body
@@ -67,7 +75,10 @@ exports.postSignUp = async (req, res) => {
     
     res.status(201).json({msg: 'User created, please login', user: savedUser});
   } catch (err) {
-    res.status(500).json({error: err.message})
+    if(!err.statusCode){
+      err.statusCode = 500;
+    }
+    next(err);
   }
 }
 
