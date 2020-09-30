@@ -9,15 +9,32 @@ router.post('/login',[
     body('username')
         .not().isEmpty()
         .trim()
+        .isLength({min: 3}),
+    body('password')
+        .not().isEmpty()
+        .trim()
+        .isLength({min: 3})
+], authController.postLogin);
+
+router.post('/signup',[
+    body('username')
+        .not().isEmpty()
+        .trim()
         .isLength({min: 3}), 
     body('email')
         .not().isEmpty()
         .trim()
         .isEmail()
-        .normalizeEmail()
-], authController.postLogin);
-
-router.post('/signup',[], authController.postSignUp);
+        .normalizeEmail(),
+    body('password')
+        .not().isEmpty()
+        .trim()
+        .isLength({min: 3}),
+    body('confirmPassword')
+        .not().isEmpty()
+        .trim()
+        .isLength({min: 3})    
+], authController.postSignUp);
 
 router.post('/isTokenValid', authController.isTokenValid);
 
