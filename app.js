@@ -82,5 +82,5 @@ server.listen(PORT, () => {
 
 
 // remove favourites
-// approve conntact addition 
+// approve contact addition 
 // share schedule 
