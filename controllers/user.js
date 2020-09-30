@@ -3,9 +3,8 @@ const Message = require('../models/message');
 
 exports.getActiveUser = async (req, res) => {
     const user = await User.findById(req.user)
-    //    await user.populate('schedule').execPopulate()
     console.log('user', user);
-    res.json({
+    res.status(200).json({
         username: user.username,
         id: user._id,
         contacts: user.contact,
@@ -39,7 +38,7 @@ exports.findUser = async (req, res) => {
             return res.status(400).json({msg: 'That user does not exist'});
         }
 
-        return res.json({username: newContact.username, id: newContact._id});
+        res.status(200).json({username: newContact.username, id: newContact._id});
 
     } catch (err) {
         console.log(err);
@@ -61,7 +60,7 @@ exports.addContact = async (req, res) => {
         findUser.contact.push(userData);
         findUser.save();
 
-        return res.json({ userData })
+        res.status(201).json({ userData })
         
     } catch (err) {
         console.log(err);
@@ -88,7 +87,7 @@ exports.addFavourite = (req, res) => {
             user.favourites.push(place);
             user.save();
         })
-    res.json({ place })
+    res.status(201).json({ place })
 }
 
 exports.removeFavourite = async (req, res) => {
@@ -96,7 +95,7 @@ exports.removeFavourite = async (req, res) => {
     const user = await User.findById(req.user)
     user.favourites = user.favourites.filter(fave => fave.name != place[1])
     const favouritesData = await user.save();    
-    res.json({ favouritesData })
+    res.status(200).json({ favouritesData })
 }
 
 exports.getUserMessages = async (req, res) => {
@@ -156,9 +155,13 @@ exports.updateUserMessages = async (req, res) => {
 }
 
 exports.getFavourites = async (req, res) => {
-    let favouritesData = await User.findById(req.user)
-    favouritesData = favouritesData.favourites
-    res.json({ favourites: favouritesData })
+    try{
+        let favouritesData = await User.findById(req.user);
+        favouritesData = favouritesData.favourites;
+        res.status(200).json({ favourites: favouritesData });
+    } catch(err) {
+        console.log(err);
+    }
 }
 
 
