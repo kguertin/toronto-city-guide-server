@@ -1,8 +1,14 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { validationResult } = require('express-validator')
 
 exports.postLogin = async (req, res) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    res.status(422).json({msg: 'There was an error', errors: errors.array()})
+  }
+  console.log(errors);
   try {
     const {username, password} = req.body;
     if (!username || !password) {
@@ -32,6 +38,10 @@ exports.postLogin = async (req, res) => {
 }
 
 exports.postSignUp = async (req, res) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    res.status(422).json({msg: 'There was an error', errors: errors.array()})
+  }
   try {
     const {username, email, password, confirmPassword} = req.body
 
