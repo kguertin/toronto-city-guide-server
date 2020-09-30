@@ -5,36 +5,23 @@ const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 
-router.post('/login',[
-    body('username')
-        .not().isEmpty()
-        .trim()
-        .isLength({min: 3}),
-    body('password')
-        .not().isEmpty()
-        .trim()
-        .isLength({min: 3})
-], authController.postLogin);
-
 router.post('/signup',[
     body('username')
-        .not().isEmpty()
-        .trim()
-        .isLength({min: 3}), 
+    .trim()
+    .isLength({min: 3}), 
     body('email')
-        .not().isEmpty()
-        .trim()
-        .isEmail()
-        .normalizeEmail(),
+    .trim()
+    .isEmail()
+    .normalizeEmail(),
     body('password')
-        .not().isEmpty()
-        .trim()
-        .isLength({min: 3}),
+    .trim()
+    .isLength({min: 3}),
     body('confirmPassword')
-        .not().isEmpty()
-        .trim()
-        .isLength({min: 3})    
+    .trim()
+    .isLength({min: 3})    
 ], authController.postSignUp);
+
+router.post('/login', authController.postLogin);
 
 router.post('/isTokenValid', authController.isTokenValid);
 
