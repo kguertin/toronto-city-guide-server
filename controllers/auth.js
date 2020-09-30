@@ -20,7 +20,7 @@ exports.postLogin = async (req, res) => {
     }
 
     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
-    res.json({token, user: {
+    res.status(200).json({token, user: {
         id: user._id,
         username: user.username,
         email: user.email 
@@ -55,7 +55,7 @@ exports.postSignUp = async (req, res) => {
       password: hashedPassword});
     const savedUser = await user.save();
     
-    res.json({msg: 'User created, please login', user: savedUser});
+    res.status(201).json({msg: 'User created, please login', user: savedUser});
   } catch (err) {
     res.status(500).json({error: err.message})
   }
@@ -72,7 +72,7 @@ exports.isTokenValid = async (req, res) => {
     const user = await User.findById(varified.id);
     if (!user) return res.json(false);
 
-    return res.json(true);
+    res.status(200).json(true);
 
   } catch (err) {
     res.status(500).json({error: err.message});
