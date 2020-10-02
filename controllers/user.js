@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const Message = require('../models/message');
+const User = require("../models/user");
+const Message = require("../models/message");
 
 exports.getActiveUser = async (req, res) => {
     try {
@@ -68,7 +68,26 @@ exports.findUser = async (req, res) => {
           }
         next(err);
     }
-}
+
+    const isContact = currentUser.contact.find((i) => {
+      return i.username === username;
+    });
+
+    if (isContact) {
+      return res.status(400).json({ msg: "User already a contact" });
+    }
+
+    const newContact = await User.findOne({ username });
+
+    if (!newContact) {
+      return res.status(400).json({ msg: "That user does not exist" });
+    }
+
+    return res.json({ username: newContact.username, id: newContact._id });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 exports.addContact = async (req, res) => {
     try {
@@ -100,7 +119,15 @@ exports.addContact = async (req, res) => {
           }
         next(err);
     }
-}
+
+    findUser.contact.push(userData);
+    findUser.save();
+
+    return res.json({ userData });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 exports.removeContact = async (req, res) => {
     try {
@@ -158,7 +185,7 @@ exports.removeFavourite = async (req, res) => {
             throw error;
         }
 
-        user.favourites = user.favourites.filter(fave => fave.name != place[1])
+        user.favourites = user.favourites.filter(fave => fave.place_id != place[0])
         const favouritesData = await user.save(); 
 
         res.status(200).json({ favouritesData })
@@ -175,44 +202,41 @@ exports.getUserMessages = async (req, res) => {
 
     const { userId, contactId } = req.body
     const messageData = await Message.find();
-    let messageHistory
+    let messageHistory;
 
     if (!messageData || messageData.length < 1) {
-        const newMessages = new Message({ users: [userId, contactId], messages: [] });
-        messageHistory = await newMessages.save();
-        res.status(200).json({ messageHistory: messageHistory });
-        return
+      const newMessages = new Message({
+        users: [userId, contactId],
+        messages: [],
+      });
+      messageHistory = await newMessages.save();
+      res.status(200).json({ messageHistory: messageHistory });
+      return;
     }
-    
-    const messageFilter = messageData.filter(i => {
-        if (i.users.includes(userId) && i.users.includes(contactId)) {
-            return i;
-        }
+
+    const messageFilter = messageData.filter((i) => {
+      if (i.users.includes(userId) && i.users.includes(contactId)) {
+        return i;
+      }
     });
 
-    if (!messageFilter.length){
-        const newMessages = new Message({ users: [userId, contactId], messages: [] });
-        messageHistory = await newMessages.save();
+    if (!messageFilter.length) {
+      const newMessages = new Message({
+        users: [userId, contactId],
+        messages: [],
+      });
+      messageHistory = await newMessages.save();
     }
 
-    if (messageFilter.length){
-        messageHistory = messageFilter[0]
+    if (messageFilter.length) {
+      messageHistory = messageFilter[0];
     }
 
     res.status(200).json({ messageHistory: messageHistory });
-    
-    } catch (err) {
-        if(!err.statusCode){
-            err.statusCode = 500;
-          }
-        next(err);
-    }
-}
 
 exports.updateUserMessages = async (req, res) => {
-    try {
-        const { newMessage, messagesId } = req.body
-
+  try {
+    const { newMessage, messagesId } = req.body;
         const query = {_id: messagesId}
         const messages = await Message.findById(query);
         const newMessageHistory = [...messages.messageHistory, newMessage];
