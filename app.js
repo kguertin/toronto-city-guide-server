@@ -20,7 +20,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-
 io.on("connection", socket => {
   let roomId;
   console.log('connected');
@@ -49,21 +48,34 @@ io.on("connection", socket => {
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const schedulerRoutes = require('./routes/schedule');
-const { on } = require('process');
 
 app.use('/auth', authRoutes);
 app.use(userRoutes);
 app.use('/api/schedules', schedulerRoutes);
+
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({
+      message: message,
+      data: data
+  })
+})
 
 mongoose.connect(process.env.DB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true
 })
+.then(() => {
+  server.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+  });
+})
+.catch(err => console.log(err))
 
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
 
 
 // delete button contact (done)
@@ -78,9 +90,6 @@ server.listen(PORT, () => {
 
 // add schedule page
 
-// deploy (heroku and netlify) git pages 
-
-
 // remove favourites
-// approve conntact addition 
+// approve contact addition 
 // share schedule 
